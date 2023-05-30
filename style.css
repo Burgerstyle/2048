@@ -1,0 +1,97 @@
+
+    
+    
+
+
+
+/* CSS-Klassen für das 2048-Spiel */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .row {
+    display: flex;
+  }
+  
+  .field {
+    width: 80px;
+    height: 80px;
+    background-color: #cdc1b4;
+    border-radius: 6px;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #776e65;
+  }
+  
+  /* Farben für verschiedene Zahlen */
+  .number-0{
+    background-color: #cdc1b4;
+  }
+
+  .number-2 {
+    background-color: rgb(238, 228, 218);
+  }
+  
+  .number-4 {
+    background-color: rgb(237, 224, 200);
+  }
+  
+  .number-8 {
+    background-color: rgb(242, 177, 121);
+  }
+  
+  .number-16 {
+    background-color: rgb(245, 149, 99);
+  }
+
+  .number-32{
+    background-color: rgb(246, 124, 95);
+  }
+
+  .number-64{
+    background-color: rgb(246, 94, 59)
+  }
+
+  .number-128{
+    background-color: rgb(237, 207, 114)
+  }
+
+  .number-256{
+    background-color: rgb(237, 204, 97)
+  }
+  
+  .number-512{
+    background-color: rgb(237, 200, 80)
+  }
+
+  .number-1024{
+    background-color: rgb(237, 197, 63)
+  }
+  
+  .number-2048{
+    background-color: rgb(237, 194, 46)
+  }
+
+  .number-4096{
+    background-color:#0022ff
+  }
+
+  .number-8192{
+    background-color:#0022ff
+  }
+
+  .number-16284{
+    background-color:#0022ff
+  }
+  
+ 
+  
+  
+  
+  
