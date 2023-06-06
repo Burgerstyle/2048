@@ -1,5 +1,6 @@
 const elFields = document.getElementsByClassName('field');
 let cont = 0; 
+let movement = 0;
 let matrix = [[0,0,0,0],
               [0,0,0,0],
               [0,0,0,0],
@@ -25,21 +26,24 @@ console.log(matrix[0][1].textContent);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "ArrowUp") {
-    moveUp(matrix);
-    // Pfeiltaste nach oben wurde gedrückt
-    // Führe hier den entsprechenden Code aus
-  } else if (event.key === "ArrowDown") {
-    moveDown(matrix);
-    // Pfeiltaste nach unten wurde gedrückt
-    // Führe hier den entsprechenden Code aus
-  } else if (event.key === "ArrowLeft") {
-    moveLeft(matrix); 
-    // Pfeiltaste nach links wurde gedrückt
-    // Führe hier den entsprechenden Code aus
-  } else if (event.key === "ArrowRight") {
-    moveRight(matrix); 
-    // Pfeiltaste nach rechts wurde gedrückt
-    // Führe hier den entsprechenden Code aus
+    if (checkIfMovePossible('up',matrix)) {
+      moveUp(matrix);
+    }
+  } 
+  else if (event.key === "ArrowDown") {
+    if (checkIfMovePossible('down',matrix)) {
+      moveDown(matrix);
+    }
+  } 
+  else if (event.key === "ArrowLeft") {
+    if (checkIfMovePossible('left',matrix)) {
+      moveLeft(matrix); 
+    }
+  } 
+  else if (event.key === "ArrowRight") {
+    if (checkIfMovePossible('right',matrix)) {
+      moveRight(matrix); 
+    }
   }
 });
 
@@ -50,33 +54,33 @@ randomSpawn(matrix);
 
 
 function isGameOverCheck(matrix) {
-    let gameOver = true;
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 4; x++) {
-        if (matrix[y][x].value === 0) {
-          gameOver = false;
+  let gameOver = true;
+  for (let y = 0; y < 4; y++) {
+    for (let x = 0; x < 4; x++) {
+      if (matrix[y][x].value === 0) {
+        gameOver = false;
+      }
+      else {
+        if (x < 3) {
+          if (matrix[y][x].value === matrix[y][x + 1].value) {
+            gameOver = false;
+          } 
         }
-        else {
-          if (x < 4) {
-            if (matrix[y][x].value === matrix[y][x + 1].value) {
-              gameOver = false;
-            } 
-          }
-          if (y < 4) {
-            if (matrix[y][x].value === matrix[y + 1][x].value) {
-              gameOver = false;
-            }
+        if (y < 3) {
+          if (matrix[y][x].value === matrix[y + 1][x].value) {
+            gameOver = false;
           }
         }
       }
-    } 
-    
-    if (gameOver) {
-      document.removeEventListener("keydown", (event));
-      alert("gemover");
     }
-    return gameOver;
+  } 
+    
+  if (gameOver) {
+    document.removeEventListener("keydown", (event));
+    alert("gemover");
   }
+  return gameOver;
+}
   
   function randomSpawn(matrix) {
     let positionsYX = [];
@@ -94,13 +98,13 @@ function isGameOverCheck(matrix) {
     let number = parseInt(Math.floor(Math.random() * numbers.length));
     
     matrix[positionsYX[amountYX][0]][positionsYX[amountYX][1]].value = numbers[number];
-    //console.log(matrix);
-     refresh(matrix);
+    
+    refresh(matrix);
     return matrix;
   }
   
   function moveUp(matrix) {
-    
+    movement = 0;
     
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
@@ -108,6 +112,7 @@ function isGameOverCheck(matrix) {
           if (matrix[y][x].value === matrix[y + 1][x].value) {
             matrix[y][x].value *= 2;
             matrix[y + 1][x].value = 0;
+            movement ++;
           }
         }
         
@@ -115,10 +120,12 @@ function isGameOverCheck(matrix) {
           if (matrix[y][x].value === matrix[y + 1][x].value) {
             matrix[y][x].value *= 2;
             matrix[y + 1][x].value = 0;
+            movement ++;
           }
           if (matrix[y - 1][x].value === 0) {
             matrix[y - 1][x].value = matrix[y][x].value;
             matrix[y][x].value = 0;
+            movement ++;
           }
         }
         
@@ -126,10 +133,12 @@ function isGameOverCheck(matrix) {
           if (matrix[y][x].value === matrix[y + 1][x].value) {
             matrix[y][x].value *= 2;
             matrix[y + 1][x].value = 0;
+            movement ++;
           }
           if (matrix[y - 1][x].value === 0) {
             matrix[y - 1][x].value = matrix[y][x].value;
             matrix[y][x].value = 0;
+            movement ++;
             if (matrix[y - 2][x].value === 0) {
               matrix[y - 2][x].value = matrix[y - 1][x].value;
               matrix[y - 1][x].value = 0;
@@ -145,6 +154,7 @@ function isGameOverCheck(matrix) {
           if (matrix[y - 1][x].value === 0) {
             matrix[y - 1][x].value = matrix[y][x].value;
             matrix[y][x].value = 0;
+            movement ++;
             if (matrix[y - 2][x].value === 0) {
               matrix[y - 2][x].value = matrix[y - 1][x].value;
               matrix[y - 1][x].value = 0;
@@ -166,8 +176,9 @@ function isGameOverCheck(matrix) {
         }
       }
     }
-    randomSpawn(matrix);
-    //console.log(matrix);
+    if (movement > 0) {
+      randomSpawn(matrix);
+    }
     refresh(matrix);
     isGameOverCheck(matrix); 
     return matrix;
@@ -404,12 +415,156 @@ function refresh(matrix) {
       }else{
         matrix[x][y].textContent = ''; 
         matrix[x][y].classList.add('number-0');
+      }  
+    }
+  }
+  return matrix; 
+}
+
+function checkIfMovePossible(direction,matrix){
+  if(direction === "left"){
+    for (let y = 0; y < 4;y++){
+      for (let x = 0; x < 3;x++) {
+        if (matrix[y][x].value === matrix[y][x + 1].value && matrix[y][x].value !== 0){
+          
+          return true;
+          
+        }
+        else if (matrix[y][x].value === 0){
+          if (x === 0) {
+            if (matrix[y][x + 1].value !== 0) {
+              return true;
+            }
+            else if (matrix[y][x + 2].value !== 0) {
+              return true;
+            }
+            else if (matrix[y][x + 3].value !== 0) {
+              return true;
+            }
+          }
+          if (x === 1) {
+            if (matrix[y][x + 1].value !== 0) {
+              return true;
+            }
+            else if (matrix[y][x + 2].value !== 0) {
+              return true;
+            }
+          }          
+          if (x === 2) {
+            if (matrix[y][x + 1].value !== 0) {
+              return true;
+            }
+          }
+        }
       }
-      //console.log(matrix[x][y].classList);
-      
+    }
+  }
+            
+  else if(direction === "right"){
+    for (let y = 0; y < 4;y++){
+      for (let x = 3; x > 0;x--) {
+        if (matrix[y][x].value === matrix[y][x - 1].value && matrix[y][x].value !== 0){
+          return true;
+        }
+        else if (matrix[y][x].value === 0){
+          if (x === 3) {
+            if (matrix[y][x - 1].value !== 0) {
+              return true;
+            }
+            else if (matrix[y][x - 2].value !== 0) {
+              return true;
+            }
+            else if (matrix[y][x - 3].value !== 0) {
+              return true;
+            }
+          }
+          if (x === 2) {
+            if (matrix[y][x - 1].value !== 0) {
+              return true;
+            }
+            else if (matrix[y][x - 2].value !== 0) {
+              return true;
+            }
+          }          
+          if (x === 1) {
+            if (matrix[y][x - 1].value !== 0) {
+              return true;
+            }
+          }
+        }
+      }
     }
   }
   
-  return matrix; 
+  else if(direction === "up"){
+    for (let y = 0; y < 3;y++){
+      for (let x = 0; x < 4;x++) {
+        if (matrix[y][x].value === matrix[y + 1][x].value && matrix[y][x].value !== 0){
+          return true;
+        }
+        else if (matrix[y][x].value === 0){
+          if (y === 0) {
+            if (matrix[y + 1][x].value !== 0) {
+              return true;
+            }
+            else if (matrix[y + 2][x].value !== 0) {
+              return true;
+            }
+            else if (matrix[y + 3][x].value !== 0) {
+              return true;
+            }
+          }
+          if (y === 1) {
+            if (matrix[y + 1][x].value !== 0) {
+              return true;
+            }
+            else if (matrix[y + 2][x].value !== 0) {
+              return true;
+            }
+          }          
+          if (y === 2) {
+            if (matrix[y + 1][x].value !== 0) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+  }
+  else if(direction === "down"){
+    for (let y = 3; y > 0;y--){
+      for (let x = 0; x < 4;x++) {
+        if (matrix[y][x].value === matrix[y - 1][x].value && matrix[y][x].value !== 0){
+          console.log('ja');
+          return true;
+        }
+        else if (matrix[y][x].value === 0){
+          if (y === 3) {
+            if (matrix[y - 1][x].value !== 0) {
+              return true;
+            }
+            else if (matrix[y - 2][x].value !== 0) {
+              return true;
+            }
+            else if (matrix[y - 3][x].value !== 0) {
+              return true;
+            }
+          }
+          if (y === 2) {
+            if (matrix[y - 1][x].value !== 0) {
+              return true;
+            }
+            else if (matrix[y - 2][x].value !== 0) {
+              return true;
+            }
+          }          
+          if (y === 1) {
+            if (matrix[y - 1][x].value !== 0) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+  }
 }
- 
