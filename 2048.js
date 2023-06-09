@@ -1,6 +1,6 @@
 const elFields = document.getElementsByClassName('field');
+
 let cont = 0; 
-let movement = 0;
 let matrix = [[0,0,0,0],
               [0,0,0,0],
               [0,0,0,0],
@@ -23,33 +23,6 @@ console.log(matrix[0][1].textContent);
 */
 //matrix[3][3].textContent = 5; 
 // console.log(elFields[15].value);
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowUp") {
-    if (checkIfMovePossible('up',matrix)) {
-      moveUp(matrix);
-    }
-  } 
-  else if (event.key === "ArrowDown") {
-    if (checkIfMovePossible('down',matrix)) {
-      moveDown(matrix);
-    }
-  } 
-  else if (event.key === "ArrowLeft") {
-    if (checkIfMovePossible('left',matrix)) {
-      moveLeft(matrix); 
-    }
-  } 
-  else if (event.key === "ArrowRight") {
-    if (checkIfMovePossible('right',matrix)) {
-      moveRight(matrix); 
-    }
-  }
-});
-
-randomSpawn(matrix);
-randomSpawn(matrix);
-
 
 
 
@@ -82,7 +55,7 @@ function isGameOverCheck(matrix) {
   return gameOver;
 }
   
-  function randomSpawn(matrix) {
+  function randomSpawn(matrix,score) {
     let positionsYX = [];
     
     for (let y = 0; y < 4; y++) {
@@ -103,8 +76,33 @@ function isGameOverCheck(matrix) {
     return matrix;
   }
   
+  randomSpawn(matrix);
+  randomSpawn(matrix);
+  
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowUp") {
+      if (checkIfMovePossible('up',matrix)) {
+        moveUp(matrix);
+      }
+    } 
+    else if (event.key === "ArrowDown") {
+      if (checkIfMovePossible('down',matrix)) {
+        moveDown(matrix);
+      }
+    } 
+    else if (event.key === "ArrowLeft") {
+      if (checkIfMovePossible('left',matrix)) {
+        moveLeft(matrix); 
+      }
+    } 
+    else if (event.key === "ArrowRight") {
+      if (checkIfMovePossible('right',matrix)) {
+        moveRight(matrix); 
+      }
+    }
+  });
+
   function moveUp(matrix) {
-    movement = 0;
     
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
@@ -112,7 +110,6 @@ function isGameOverCheck(matrix) {
           if (matrix[y][x].value === matrix[y + 1][x].value) {
             matrix[y][x].value *= 2;
             matrix[y + 1][x].value = 0;
-            movement ++;
           }
         }
         
@@ -120,12 +117,10 @@ function isGameOverCheck(matrix) {
           if (matrix[y][x].value === matrix[y + 1][x].value) {
             matrix[y][x].value *= 2;
             matrix[y + 1][x].value = 0;
-            movement ++;
           }
           if (matrix[y - 1][x].value === 0) {
             matrix[y - 1][x].value = matrix[y][x].value;
             matrix[y][x].value = 0;
-            movement ++;
           }
         }
         
@@ -133,12 +128,10 @@ function isGameOverCheck(matrix) {
           if (matrix[y][x].value === matrix[y + 1][x].value) {
             matrix[y][x].value *= 2;
             matrix[y + 1][x].value = 0;
-            movement ++;
           }
           if (matrix[y - 1][x].value === 0) {
             matrix[y - 1][x].value = matrix[y][x].value;
             matrix[y][x].value = 0;
-            movement ++;
             if (matrix[y - 2][x].value === 0) {
               matrix[y - 2][x].value = matrix[y - 1][x].value;
               matrix[y - 1][x].value = 0;
@@ -154,7 +147,6 @@ function isGameOverCheck(matrix) {
           if (matrix[y - 1][x].value === 0) {
             matrix[y - 1][x].value = matrix[y][x].value;
             matrix[y][x].value = 0;
-            movement ++;
             if (matrix[y - 2][x].value === 0) {
               matrix[y - 2][x].value = matrix[y - 1][x].value;
               matrix[y - 1][x].value = 0;
@@ -171,14 +163,13 @@ function isGameOverCheck(matrix) {
               matrix[y - 2][x].value *= 2;
               matrix[y - 1][x].value = 0;
             }
-            
           }
         }
       }
     }
-    if (movement > 0) {
-      randomSpawn(matrix);
-    }
+    
+    randomSpawn(matrix);
+    
     refresh(matrix);
     isGameOverCheck(matrix); 
     return matrix;
